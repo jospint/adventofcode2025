@@ -10,16 +10,11 @@ import scala.io.Source
   }
 
   val source = Source.fromFile(fileName)
-  val lines = source.getLines().toArray.map("." ++ _ ++ ".")
-  val lineSize = lines(0).length
-  val accessibleRolls = Range(0, lines.length).map { lineIndex =>
-    if (lineIndex == 0) {
-      calculateAccessibleRolls(lines(lineIndex), ".".repeat(lineSize), lines(lineIndex + 1))
-    } else if (lineIndex == lines.length - 1) {
-      calculateAccessibleRolls(lines(lineIndex), lines(lineIndex - 1), ".".repeat(lineSize))
-    } else {
-      calculateAccessibleRolls(lines(lineIndex), lines(lineIndex - 1), lines(lineIndex + 1))
-    }
+  val rawLines = source.getLines().toArray
+  val lineSize = rawLines(0).length
+  val lines = ".".repeat(lineSize) +: rawLines.map("." ++ _ ++ ".") :+ ".".repeat(lineSize)
+  val accessibleRolls = Range(1, lines.length - 1).map { lineIndex =>
+    calculateAccessibleRolls(lines(lineIndex), lines(lineIndex - 1), lines(lineIndex + 1))
   }.sum
   println(s"The total accessible rolls are $accessibleRolls")
 
